@@ -20,26 +20,19 @@ const VerseForm = ({ verse, onSave, onCancel, isSaving = false }: VerseFormProps
     link: verse?.link || ''
   });
 
-  const [newNumber, setNewNumber] = useState('');
   const [newInsight, setNewInsight] = useState('');
 
-  const addNumber = () => {
-    if (newNumber && !formData.numbers.includes(newNumber)) {
-      setFormData({
-        ...formData,
-        numbers: [...formData.numbers, newNumber]
-      });
-      setNewNumber('');
-    }
+  const addNumberField = () => {
+    setFormData({
+      ...formData,
+      numbers: [...formData.numbers, '']  // Add a new empty field
+    });
   };
 
-  const removeNumber = (index: number) => {
-    if (formData.numbers.length > 1) {
-      setFormData({
-        ...formData,
-        numbers: formData.numbers.filter((_, i) => i !== index)
-      });
-    }
+  const updateNumber = (index: number, value: string) => {
+    const newNumbers = [...formData.numbers];
+    newNumbers[index] = value;
+    setFormData({ ...formData, numbers: newNumbers });
   };
 
   const addInsight = () => {
@@ -59,11 +52,27 @@ const VerseForm = ({ verse, onSave, onCancel, isSaving = false }: VerseFormProps
     });
   };
 
+  const removeNumber = (index: number) => {
+    setFormData({
+      ...formData,
+      numbers: formData.numbers.filter((_, i) => i !== index)
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Filter out any empty numbers before saving
+    const cleanedNumbers = formData.numbers.filter(num => num !== '');
+    const cleanedData = {
+      ...formData,
+      numbers: cleanedNumbers
+    };
+
     // Basic validation
-    if (formData.numbers[0] && formData.verse && formData.translation) {
-      onSave(formData);
+    console.log('Form data:', cleanedData);
+    if (cleanedData.numbers[0] && cleanedData.verse && cleanedData.translation) {
+      onSave(cleanedData);
     }
   };
 
@@ -79,11 +88,7 @@ const VerseForm = ({ verse, onSave, onCancel, isSaving = false }: VerseFormProps
               <input
                 type="text"
                 value={num}
-                onChange={(e) => {
-                  const newNumbers = [...formData.numbers];
-                  newNumbers[index] = e.target.value;
-                  setFormData({ ...formData, numbers: newNumbers });
-                }}
+                onChange={(e) => updateNumber(index, e.target.value)}
                 className="flex-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="e.g., BG 2.7"
                 required={index === 0}
@@ -102,17 +107,9 @@ const VerseForm = ({ verse, onSave, onCancel, isSaving = false }: VerseFormProps
             </div>
           ))}
           <div className="flex items-center gap-2">
-            <input
-              type="text"
-              value={newNumber}
-              onChange={(e) => setNewNumber(e.target.value)}
-              className="flex-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Add another verse number"
-              disabled={isSaving}
-            />
             <button
               type="button"
-              onClick={addNumber}
+              onClick={addNumberField}
               className="p-2 text-blue-500 hover:text-blue-700 disabled:opacity-50"
               disabled={isSaving}
             >

@@ -25,6 +25,8 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const { verse, index }: { verse: Verse, index: number } = await req.json();
+    console.log('Received verse:', verse);
+    console.log('Received index:', index);
     const verses = getAllVerses();
     
     if (index < 0 || index >= verses.length) {
