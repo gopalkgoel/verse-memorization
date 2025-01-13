@@ -13,6 +13,7 @@ interface CommandPaletteProps {
 const CommandPalette = ({ verses, onVerseSelect }: CommandPaletteProps) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   // Toggle the command palette with ⌘K
   useEffect(() => {
@@ -20,12 +21,23 @@ const CommandPalette = ({ verses, onVerseSelect }: CommandPaletteProps) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((open) => !open);
+        // Focus will happen in the other useEffect
       }
     };
 
     document.addEventListener('keydown', down);
     return () => document.removeEventListener('keydown', down);
   }, []);
+
+  // Add new useEffect for focusing
+  useEffect(() => {
+    if (open) {
+      // Small delay to ensure the input is mounted
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    }
+  }, [open]);
 
   // Filter verses based on search
   const filteredVerses = verses.filter((verse) => {
@@ -75,6 +87,7 @@ const CommandPalette = ({ verses, onVerseSelect }: CommandPaletteProps) => {
             >
               <Search className="w-4 h-4 text-slate-500 mr-2" />
               <Command.Input
+                ref={inputRef}
                 autoFocus
                 placeholder="Search verses..."
                 className="flex-1 outline-none placeholder:text-slate-500"
