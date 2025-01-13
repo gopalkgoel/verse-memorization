@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import VerseDisplay from './VerseDisplay';
+import CommandPalette from './CommandPalette';
 import type { Verse } from '../types';
 
 interface VerseNavigatorProps {
@@ -59,6 +60,14 @@ const VerseNavigator = ({ verses }: VerseNavigatorProps) => {
 
   return (
     <div className="relative w-full">
+      <CommandPalette 
+        verses={verses} 
+        onVerseSelect={(index) => {
+          setCurrentIndex(index);
+          saveLastViewedVerse(index);
+        }} 
+      />
+      
       <div className="flex justify-between items-center mb-4">
         <button
           onClick={goToPrevious}
@@ -84,7 +93,7 @@ const VerseNavigator = ({ verses }: VerseNavigatorProps) => {
       <VerseDisplay verse={verses[currentIndex]} />
       
       <div className="mt-4 text-center text-sm text-slate-500">
-        Use ← and → arrow keys or buttons to navigate
+        Use ← and → arrow keys or buttons to navigate • Press ⌘K to search
       </div>
     </div>
   );
