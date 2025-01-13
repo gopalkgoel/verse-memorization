@@ -42,16 +42,25 @@ const CommandPalette = ({ verses, onVerseSelect }: CommandPaletteProps) => {
   // Filter verses based on search
   const filteredVerses = verses.filter((verse) => {
     const searchLower = search.toLowerCase();
+    
+    // // Add some debug logging
+    // console.log('Searching:', searchLower);
+    // console.log('Verse numbers:', verse.numbers);
+    // console.log('Matches number?', verse.numbers.some(num => num.toLowerCase().includes(searchLower)));
+    // console.log('Matches verse?', verse.verse.toLowerCase().includes(searchLower));
+    // console.log('Matches translation?', verse.translation.toLowerCase().includes(searchLower));
+    // console.log('Verse:', verse);
+    
     return (
-      // Match verse numbers
       verse.numbers.some(num => 
         num.toLowerCase().includes(searchLower)
       ) ||
-      // Match verse text or translation
       verse.verse.toLowerCase().includes(searchLower) ||
       verse.translation.toLowerCase().includes(searchLower)
     );
   });
+
+  console.log('Filtered verses:', filteredVerses);
 
   return (
     <>
@@ -107,7 +116,7 @@ const CommandPalette = ({ verses, onVerseSelect }: CommandPaletteProps) => {
               {filteredVerses.map((verse, index) => (
                 <Command.Item
                   key={verse.numbers[0]}
-                  value={verse.numbers[0]}
+                  value={`${verse.numbers.join(' ')} ${verse.verse} ${verse.translation}`}
                   className="p-2 rounded hover:bg-slate-100 cursor-pointer text-sm flex flex-col gap-1"
                   onSelect={() => {
                     onVerseSelect(verses.indexOf(verse));
