@@ -71,8 +71,11 @@ const VerseNavigator = ({ verses: initialVerses }: VerseNavigatorProps) => {
         newVerses[currentIndex] = verse;
         setVerses(newVerses);
       } else {
-        setVerses([...verses, verse]);
-        setCurrentIndex(verses.length); // Go to new verse
+        const newVerses = [...verses, verse];
+        const newIndex = newVerses.length - 1;
+        setVerses(newVerses);
+        setCurrentIndex(newIndex);
+        saveLastViewedVerse(newIndex); // Save the new verse as last viewed
       }
       
       setIsEditing(false);

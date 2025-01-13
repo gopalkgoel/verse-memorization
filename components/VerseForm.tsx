@@ -36,13 +36,19 @@ const VerseForm = ({ verse, onSave, onCancel, isSaving = false }: VerseFormProps
   };
 
   const addInsight = () => {
-    if (newInsight && !formData.insights?.includes(newInsight)) {
-      setFormData({
-        ...formData,
-        insights: [...(formData.insights || []), newInsight]
-      });
-      setNewInsight('');
+    if (newInsight) {
+      setFormData(prevData => ({
+        ...prevData,
+        insights: [...(prevData.insights || []), newInsight]
+      }));
+      setNewInsight('');  // Clear the input after adding
     }
+  };
+
+  const updateInsight = (index: number, value: string) => {
+    const newInsights = [...(formData.insights || [])];
+    newInsights[index] = value;
+    setFormData({ ...formData, insights: newInsights });
   };
 
   const removeInsight = (index: number) => {
@@ -59,20 +65,33 @@ const VerseForm = ({ verse, onSave, onCancel, isSaving = false }: VerseFormProps
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Filter out any empty numbers before saving
-    const cleanedNumbers = formData.numbers.filter(num => num !== '');
-    const cleanedData = {
-      ...formData,
-      numbers: cleanedNumbers
-    };
+    // Add any pending new insight before saving
+    if (newInsight) {
+      // Need to update formData directly here since setState is async
+      const updatedInsights = [...(formData.insights || []), newInsight];
+      const cleanedData = {
+        ...formData,
+        insights: updatedInsights.filter(insight => insight !== ''),
+        numbers: formData.numbers.filter(num => num !== '')
+      };
+      
+      if (cleanedData.numbers[0] && cleanedData.verse && cleanedData.translation) {
+        onSave(cleanedData);
+      }
+    } else {
+      // No pending insight, just clean and save
+      const cleanedData = {
+        ...formData,
+        insights: (formData.insights || []).filter(insight => insight !== ''),
+        numbers: formData.numbers.filter(num => num !== '')
+      };
 
-    // Basic validation
-    console.log('Form data:', cleanedData);
-    if (cleanedData.numbers[0] && cleanedData.verse && cleanedData.translation) {
-      onSave(cleanedData);
+      if (cleanedData.numbers[0] && cleanedData.verse && cleanedData.translation) {
+        onSave(cleanedData);
+      }
     }
   };
 
@@ -173,11 +192,7 @@ const VerseForm = ({ verse, onSave, onCancel, isSaving = false }: VerseFormProps
               <input
                 type="text"
                 value={insight}
-                onChange={(e) => {
-                  const newInsights = [...(formData.insights || [])];
-                  newInsights[index] = e.target.value;
-                  setFormData({ ...formData, insights: newInsights });
-                }}
+                onChange={(e) => updateInsight(index, e.target.value)}
                 className="flex-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={isSaving}
               />
