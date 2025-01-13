@@ -9,6 +9,10 @@ interface VerseDisplayProps {
 const VerseDisplay = ({ verse }: VerseDisplayProps) => {
   const [isRevealed, setIsRevealed] = React.useState(false);
 
+  React.useEffect(() => {
+    setIsRevealed(false);
+  }, [verse]);
+
   return (
     <div className="max-w-2xl mx-auto rounded-lg border border-slate-200 bg-white shadow">
       <div className="flex items-center justify-between border-b border-slate-200 p-4">
