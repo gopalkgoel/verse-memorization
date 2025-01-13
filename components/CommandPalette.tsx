@@ -56,7 +56,10 @@ const CommandPalette = ({ verses, onVerseSelect }: CommandPaletteProps) => {
       </button>
 
       {/* Command Dialog */}
-      <div className={`fixed inset-0 bg-black/50 z-50 ${open ? '' : 'hidden'}`}>
+      <div 
+        className={`fixed inset-0 bg-black/50 z-50 ${open ? '' : 'hidden'}`}
+        onClick={() => setOpen(false)}
+      >
         <div className="fixed inset-x-4 top-8 max-w-2xl mx-auto">
           <Command
             className="w-full bg-white rounded-lg shadow-lg border border-slate-200 overflow-hidden"
@@ -66,7 +69,10 @@ const CommandPalette = ({ verses, onVerseSelect }: CommandPaletteProps) => {
               }
             }}
           >
-            <div className="flex items-center border-b p-2">
+            <div 
+              className="flex items-center border-b p-2"
+              onClick={(e) => e.stopPropagation()}
+            >
               <Search className="w-4 h-4 text-slate-500 mr-2" />
               <Command.Input
                 autoFocus
@@ -77,7 +83,10 @@ const CommandPalette = ({ verses, onVerseSelect }: CommandPaletteProps) => {
               />
             </div>
 
-            <Command.List className="max-h-96 overflow-y-auto p-2">
+            <Command.List 
+              className="max-h-96 overflow-y-auto p-2"
+              onClick={(e) => e.stopPropagation()}
+            >
               <Command.Empty className="p-4 text-sm text-slate-500">
                 No verses found.
               </Command.Empty>
