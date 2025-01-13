@@ -39,29 +39,6 @@ const CommandPalette = ({ verses, onVerseSelect }: CommandPaletteProps) => {
     }
   }, [open]);
 
-  // Filter verses based on search
-  const filteredVerses = verses.filter((verse) => {
-    const searchLower = search.toLowerCase();
-    
-    // // Add some debug logging
-    // console.log('Searching:', searchLower);
-    // console.log('Verse numbers:', verse.numbers);
-    // console.log('Matches number?', verse.numbers.some(num => num.toLowerCase().includes(searchLower)));
-    // console.log('Matches verse?', verse.verse.toLowerCase().includes(searchLower));
-    // console.log('Matches translation?', verse.translation.toLowerCase().includes(searchLower));
-    // console.log('Verse:', verse);
-    
-    return (
-      verse.numbers.some(num => 
-        num.toLowerCase().includes(searchLower)
-      ) ||
-      verse.verse.toLowerCase().includes(searchLower) ||
-      verse.translation.toLowerCase().includes(searchLower)
-    );
-  });
-
-  console.log('Filtered verses:', filteredVerses);
-
   return (
     <>
       {/* Search Trigger Button */}
@@ -113,10 +90,10 @@ const CommandPalette = ({ verses, onVerseSelect }: CommandPaletteProps) => {
                 No verses found.
               </Command.Empty>
 
-              {filteredVerses.map((verse, index) => (
+              {verses.map((verse, index) => (
                 <Command.Item
                   key={verse.numbers[0]}
-                  value={`${verse.numbers.join(' ')} ${verse.verse} ${verse.translation}`}
+                  value={`${verse.numbers.join(' ')} ${verse.verse} ${verse.translation} ${verse.normalizedVerse}`}
                   className="p-2 rounded hover:bg-slate-100 cursor-pointer text-sm flex flex-col gap-1"
                   onSelect={() => {
                     onVerseSelect(verses.indexOf(verse));
@@ -125,7 +102,7 @@ const CommandPalette = ({ verses, onVerseSelect }: CommandPaletteProps) => {
                   }}
                 >
                   <div className="font-medium">{verse.numbers.join(', ')}</div>
-                  <div className="text-slate-500 truncate">{verse.translation}</div>
+                  <div className="text-slate-500 truncate">{verse.verse}</div>
                 </Command.Item>
               ))}
             </Command.List>
