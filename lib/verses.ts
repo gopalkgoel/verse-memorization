@@ -26,11 +26,6 @@ export function getAllVerses(): Verse[] {
   return verses;
 }
 
-export function getVerseByNumber(number: string): Verse | null {
-  const verses = getAllVerses();
-  return verses.find(verse => verse.numbers.includes(number)) || null;
-}
-
 export function normalizeVerse(text: string): string {
   return text
     .toLowerCase()
