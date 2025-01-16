@@ -96,7 +96,7 @@ const CommandPalette = ({ verses, onVerseSelect }: CommandPaletteProps) => {
                   value={`${verse.numbers.join(' ')} ${verse.verse} ${verse.translation} ${verse.normalizedVerse}`}
                   className="p-2 rounded hover:bg-slate-100 cursor-pointer text-sm flex flex-col gap-1"
                   onSelect={() => {
-                    onVerseSelect(verses.indexOf(verse));
+                    onVerseSelect(index);
                     setOpen(false);
                     setSearch('');
                   }}
