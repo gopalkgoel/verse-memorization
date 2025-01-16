@@ -1,20 +1,27 @@
-import { writeFile } from 'fs/promises';
 import { NextRequest, NextResponse } from 'next/server';
-import { join } from 'path';
-import yaml from 'yaml';
-import { getAllVerses } from '@/lib/verses';
+import { normalizeVerse } from '@/lib/verses';
 import type { Verse } from '@/types';
+import { supabase } from '@/lib/supabaseClient';
 
+// POST /api/verses
 export async function POST(req: NextRequest) {
   try {
     const verse: Verse = await req.json();
-    const verses = getAllVerses();
-    verses.push(verse);
     
-    const yamlString = yaml.stringify(verses);
-    const filePath = join(process.cwd(), 'data/verses.yaml');
-    await writeFile(filePath, yamlString, 'utf8');
-    
+    // Add normalizedVerse if not provided
+    if (!verse.normalizedVerse && verse.verse) {
+      verse.normalizedVerse = normalizeVerse(verse.verse);
+    }
+
+    const { error } = await supabase
+      .from('verses')
+      .insert([verse]); // Insert an array of rows
+
+    if (error) {
+      console.error('Error inserting verse:', error);
+      return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    }
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error adding verse:', error);
@@ -22,22 +29,36 @@ export async function POST(req: NextRequest) {
   }
 }
 
+// PUT /api/verses
+// We assume the request body includes: { verse: Verse }
 export async function PUT(req: NextRequest) {
   try {
-    const { verse, index }: { verse: Verse, index: number } = await req.json();
-    console.log('Received verse:', verse);
-    console.log('Received index:', index);
-    const verses = getAllVerses();
-    
-    if (index < 0 || index >= verses.length) {
-      return NextResponse.json({ success: false, error: 'Invalid verse index' }, { status: 400 });
+    const body = await req.json();
+    const verse: Verse = body.verse;
+
+    if (!verse.id) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'No verse "id" provided' 
+      }, { status: 400 });
     }
-    
-    verses[index] = verse;
-    const yamlString = yaml.stringify(verses);
-    const filePath = join(process.cwd(), 'data/verses.yaml');
-    await writeFile(filePath, yamlString, 'utf8');
-    
+
+    // Make sure verse is normalized
+    if (!verse.normalizedVerse && verse.verse) {
+      verse.normalizedVerse = normalizeVerse(verse.verse);
+    }
+
+    // Attempt to update the row by id
+    const { error } = await supabase
+      .from('verses')
+      .update(verse)
+      .eq('id', verse.id);
+
+    if (error) {
+      console.error('Error updating verse:', error);
+      return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    }
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error updating verse:', error);

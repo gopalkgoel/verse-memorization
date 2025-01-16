@@ -52,7 +52,7 @@ const VerseNavigator = ({ verses: initialVerses }: VerseNavigatorProps) => {
     try {
       const endpoint = isEditing ? '/api/verses' : '/api/verses';
       const method = isEditing ? 'PUT' : 'POST';
-      const body = isEditing ? { verse, index: currentIndex } : verse;
+      const body = isEditing ? { verse } : verse;
       
       const response = await fetch(endpoint, {
         method,

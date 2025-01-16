@@ -1,8 +1,8 @@
 import VerseNavigator from '../components/VerseNavigator';
 import { getAllVerses } from '@/lib/verses';
 
-export default function Home() {
-  const verses = getAllVerses();
+export default async function Home() {
+  const verses = await getAllVerses();
   
   return (
     <main className="min-h-screen p-4 bg-slate-50">

@@ -13,6 +13,7 @@ interface VerseFormProps {
 
 const VerseForm = ({ verse, onSave, onCancel, isSaving = false }: VerseFormProps) => {
   const [formData, setFormData] = useState<Verse>({
+    id: verse?.id,
     numbers: verse?.numbers || [''],
     verse: verse?.verse || '',
     translation: verse?.translation || '',
