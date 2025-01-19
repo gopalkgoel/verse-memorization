@@ -26,3 +26,5 @@ export function normalizeVerse(text: string): string {
     .replace(/[-\s]+/g, ' ')
     .trim();
 }
+
+export const revalidate = 0;
