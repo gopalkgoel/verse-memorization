@@ -1,3 +1,5 @@
+'use client';
+
 import type { Verse } from '@/types';
 import { supabase } from '@/lib/supabaseClient';
 
