@@ -1,3 +1,5 @@
+export const revalidate = 0;  
+
 import VerseNavigator from '../components/VerseNavigator';
 import { getAllVerses } from '@/lib/verses';
 
