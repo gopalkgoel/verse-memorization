@@ -1,5 +1,9 @@
 
-`This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Verse Memorization App
+
+A Next.js application for memorizing and studying scriptural verses. Features include verse navigation, search functionality, and the ability to add/edit verses with translations and insights.
+
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
